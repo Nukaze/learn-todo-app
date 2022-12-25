@@ -30,10 +30,14 @@ void navigateTo(BuildContext context, var pageName){
 }
 class Palette{
   String hexColor = "";
-  final Color primary = const Color.fromRGBO(17, 43, 60, 1);
-  final Color secondary = const Color.fromRGBO(32, 83, 117, 1);
-  final Color contrast = const Color.fromRGBO(246, 107, 14, 1);
-  final Color text = const Color.fromRGBO(239, 239, 239, 1);
+  // static Color primary = const (17, 43, 60);
+  static Color primaryRGBO = const Color.fromRGBO(17, 43, 60, 1);
+  static Color secondary = const Color.fromRGBO(32, 83, 117, 1);
+  static Color secondaryRGBO = const Color.fromRGBO(32, 83, 117, 1);
+  static Color contrast = const Color.fromRGBO(246, 107, 14, 1);
+  static Color contrastRGBO = const Color.fromRGBO(246, 107, 14, 1);
+  static Color text = const Color.fromRGBO(239, 239, 239, 1);
+  static Color textRGBO = const Color.fromRGBO(239, 239, 239, 1);
 
   List<int> hexToRgba(String hex){
     hex = hex.substring(1);
