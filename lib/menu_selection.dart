@@ -2,8 +2,9 @@ import "package:flutter/material.dart";
 
 
 class MenuSelection extends StatefulWidget{
+  const MenuSelection({super.key});
   @override
-  _MenuSelectionState createState() => _MenuSelectionState();
+  State<MenuSelection> createState() => _MenuSelectionState();
 }
 
 class _MenuSelectionState extends State<MenuSelection>{
@@ -13,7 +14,7 @@ class _MenuSelectionState extends State<MenuSelection>{
       appBar: AppBar(title:const Text("Menu"),
       ),
       body: Center(
-        child: const Text("Menu Selection")
+        child: const Text("Menu Selection"),
       ),
     );
   }
