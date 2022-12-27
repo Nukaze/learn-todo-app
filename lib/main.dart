@@ -28,25 +28,27 @@ void navigateTo(BuildContext context, var pageName){
     );
   }
 }
-class Palette{
-  String hexColor = "";
-  // static Color primary = const (17, 43, 60);
-  static Color primaryRGBO = const Color.fromRGBO(17, 43, 60, 1);
-  static Color secondary = const Color.fromRGBO(32, 83, 117, 1);
-  static Color secondaryRGBO = const Color.fromRGBO(32, 83, 117, 1);
-  static Color contrast = const Color.fromRGBO(246, 107, 14, 1);
-  static Color contrastRGBO = const Color.fromRGBO(246, 107, 14, 1);
-  static Color text = const Color.fromRGBO(239, 239, 239, 1);
-  static Color textRGBO = const Color.fromRGBO(239, 239, 239, 1);
 
-  List<int> hexToRgba(String hex){
+class Palette{
+  static const Color primary = Color.fromRGBO(17, 43, 60, 1);
+  static const Color secondary = Color.fromRGBO(32, 83, 117, 1);
+  static const Color contrast = Color.fromRGBO(246, 107, 14, 1);
+  static const Color text = Color.fromRGBO(239, 239, 239, 1);
+  static final MaterialColor primaryMate = _setter("#112B3C");
+  static final MaterialColor secondaryMate = _setter("#205375");
+  static final MaterialColor contrastMate = _setter("#F66B0E");
+  static final MaterialColor textMate = _setter("#EFEFEF");
+  String hexColor = "";
+
+  static List<int> hexToRgba(String hex){
     hex = hex.substring(1);
     int r = int.parse(hex.substring(0, 2), radix: 16);
     int g = int.parse(hex.substring(2, 4), radix: 16);
     int b = int.parse(hex.substring(4, 6), radix: 16);
+    debugPrint("");
     return [r, g, b, 1];
   }
-  void setColor(var colorCode){
+  static void setColor(var colorCode){
     if(colorCode.contains('#')){
 
     }
@@ -54,6 +56,26 @@ class Palette{
 
     }
   }
+  static MaterialColor _setter(String colorCode){
+    Color color = Color(int.parse(colorCode.substring(1), radix: 16));
+    MaterialColor customColor = MaterialColor(
+        color.value,
+        <int, Color>{
+          50: color.withOpacity(.9),
+          100: color.withOpacity(.8),
+          200: color.withOpacity(.7),
+          300: color.withOpacity(.6),
+          400: color.withOpacity(.5),
+          500: color.withOpacity(.4),
+          600: color.withOpacity(.3),
+          700: color.withOpacity(.2),
+          800: color.withOpacity(.1),
+          900: color.withOpacity(.0),
+        }
+    );
+    return customColor;
+  }
+
 
 }
 
