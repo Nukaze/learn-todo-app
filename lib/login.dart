@@ -1,7 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'main.dart';
+import 'tools.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,7 +9,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage>{
   @override
   Widget build(BuildContext context){
-
+    int textValue = Palette.text.value;
+    int textMateValue = Palette.textMate.value;
+    debugPrint("${textValue} || ${textMateValue}");
     return Container(
       padding: const EdgeInsets.only(top: 150,bottom: 100, left: 20, right: 20),
       margin: const EdgeInsets.only(top: 40),
@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage>{
         color: Palette.secondary,
         borderRadius: BorderRadius.circular(4),
         boxShadow: [
-          BoxShadow(color: Palette.contrast, blurRadius: 10),
+          const BoxShadow(color: Palette.contrast, blurRadius: 10),
         ],
       ),
       child: const Text("Login!",style: TextStyle(color: Palette.text, fontSize: 56)),
