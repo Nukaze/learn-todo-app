@@ -89,20 +89,25 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-              onPressed: _incrementCounter,
-              child: const Icon(Icons.add_circle_rounded)),
+            heroTag: "incrementCounterBtn",
+            onPressed: _incrementCounter,
+            child: const Icon(Icons.add_circle_rounded),
+          ),
           SizedBox(width: padding["width"], height: padding["height"]),
           FloatingActionButton(
+            heroTag: "resetCounterBtn",
             onPressed: _resetCounter,
             child: const Icon(Icons.refresh_rounded),
           ),
           SizedBox(width: padding["width"], height: padding["height"]),
           FloatingActionButton(
+            heroTag: "wifiToggleBtn",
             onPressed: _toggleWifi,
             child: Icon(wifiIcon),
           ),
           SizedBox(width: padding["width"], height: padding["height"]),
           FloatingActionButton(
+            heroTag: "menuSelectionBtn",
             onPressed: () {
               navigateTo(context, "MenuSelection");
             },
