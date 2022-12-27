@@ -89,13 +89,13 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            heroTag: "incrementCounterBtn",
+            heroTag: null,
             onPressed: _incrementCounter,
             child: const Icon(Icons.add_circle_rounded),
           ),
           SizedBox(width: padding["width"], height: padding["height"]),
           FloatingActionButton(
-            heroTag: "resetCounterBtn",
+            heroTag: null,
             onPressed: _resetCounter,
             child: const Icon(Icons.refresh_rounded),
           ),
