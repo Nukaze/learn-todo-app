@@ -95,19 +95,28 @@ class _MyHomePageState extends State<MyHomePage> {
             onPressed: _incrementCounter,
             child: const Icon(Icons.add_circle_rounded),
           ),
-          SizedBox(width: padding["width"], height: padding["height"]),
+          SizedBox(
+            width: padding["width"],
+            height: padding["height"],
+          ),
           FloatingActionButton(
             heroTag: null,
             onPressed: _resetCounter,
             child: const Icon(Icons.refresh_rounded),
           ),
-          SizedBox(width: padding["width"], height: padding["height"]),
+          SizedBox(
+            width: padding["width"],
+            height: padding["height"],
+          ),
           FloatingActionButton(
             heroTag: "wifiToggleBtn",
             onPressed: _toggleWifi,
             child: Icon(wifiIcon),
           ),
-          SizedBox(width: padding["width"], height: padding["height"]),
+          SizedBox(
+            width: padding["width"],
+            height: padding["height"],
+          ),
           FloatingActionButton(
             heroTag: "menuSelectionBtn",
             onPressed: () {
