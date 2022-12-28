@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
-void dprint(dynamic msg) {
-  debugPrint("[DEBUG_PRINT]: ${msg.toString()}");
-}
+void dprint(dynamic msg) => debugPrint("[DEBUG_PRINT]: ${msg.toString()}");
 
 void navigateTo(BuildContext context, var pageName) {
   dprint("[ Navigate to $pageName.. ]");
-
   try {
     Navigator.pushNamed(context, pageName.toString());
     dprint("[ Navigate to $pageName *Success ]");
@@ -39,16 +36,20 @@ void navigateTo(BuildContext context, var pageName) {
 }
 
 class Palette {
+  static const Map<String, String> _hexPalette = {
+    "primary": "#112B3C",
+    "secondary": "#205375",
+    "contrast": "#F66B0E",
+    "text": "#EFEFEF",
+  };
   static const Color primary = Color.fromRGBO(17, 43, 60, 1);
   static const Color secondary = Color.fromRGBO(32, 83, 117, 1);
   static const Color contrast = Color.fromRGBO(246, 107, 14, 1);
   static const Color text = Color.fromRGBO(239, 239, 239, 1);
-  static final MaterialColor primaryMate = setColor("#112B3C");
-  static final MaterialColor secondaryMate = setColor("#205375");
-  static final MaterialColor contrastMate = setColor("#F66B0E");
-  static final MaterialColor textMate = setColor("#EFEFEF");
-  String hexColor = "";
-
+  static final MaterialColor primaryMate = setColor(_hexPalette["primary"]!);
+  static final MaterialColor secondaryMate = setColor(_hexPalette["secondary"]!);
+  static final MaterialColor contrastMate = setColor(_hexPalette["contrast"]!);
+  static final MaterialColor textMate = setColor(_hexPalette["text"]!);
   static List<int> hexToRgba(String hex) {
     hex = hex.substring(1);
     int r = int.parse(hex.substring(0, 2), radix: 16);
@@ -60,7 +61,7 @@ class Palette {
 
   static MaterialColor setColor(String hexCode) {
     dprint(hexCode);
-    hexCode = "FF" + hexCode.trim().substring(1);
+    hexCode = "FF${hexCode.trim().substring(1)}";
     Color color = Color(int.parse(hexCode, radix: 16));
     MaterialColor customMaterialColor = MaterialColor(color.value, <int, Color>{
       50: color.withOpacity(.1),
