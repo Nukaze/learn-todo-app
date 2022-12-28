@@ -1,20 +1,20 @@
 import "package:flutter/material.dart";
 
-
-class MenuSelection extends StatefulWidget{
+class MenuSelection extends StatefulWidget {
   const MenuSelection({super.key});
   @override
   State<MenuSelection> createState() => _MenuSelectionState();
 }
 
-class _MenuSelectionState extends State<MenuSelection>{
+class _MenuSelectionState extends State<MenuSelection> {
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:const Text("Menu"),
+      appBar: AppBar(
+        title: const Text("Menu"),
       ),
-      body: Center(
-        child: const Text("Menu Selection"),
+      body: const Center(
+        child: Text("Menu Selection"),
       ),
     );
   }
