@@ -30,8 +30,14 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ],
       ),
-      child: const Text("Login!",
-          style: TextStyle(color: Palette.text, fontSize: 56)),
+      child: const Text("MBTi Login\nนะจ๊ะ!",
+          style: TextStyle(
+            color: Palette.text,
+            fontSize: 56,
+            fontFamily: "Kanit",
+            fontWeight: FontWeight.w700,
+            decoration: TextDecoration.none,
+          )),
     );
   }
 }
