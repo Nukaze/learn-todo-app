@@ -40,7 +40,7 @@ class Palette {
     "primary": "#112B3C",
     "secondary": "#205375",
     "contrast": "#F66B0E",
-    "text": "#EFEFEF",
+    "text": "#EFEFEF"
   };
   static const Color primary = Color.fromRGBO(17, 43, 60, 1);
   static const Color secondary = Color.fromRGBO(32, 83, 117, 1);
@@ -50,6 +50,7 @@ class Palette {
   static final MaterialColor secondaryMate = setColor(_hexPalette["secondary"]!);
   static final MaterialColor contrastMate = setColor(_hexPalette["contrast"]!);
   static final MaterialColor textMate = setColor(_hexPalette["text"]!);
+
   static List<int> hexToRgba(String hex) {
     hex = hex.substring(1);
     int r = int.parse(hex.substring(0, 2), radix: 16);
