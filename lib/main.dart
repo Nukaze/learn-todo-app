@@ -16,9 +16,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Wow za',
       theme: ThemeData(
-          primarySwatch: Colors.blueGrey, secondaryHeaderColor: Colors.brown),
-      home: const MyHomePage(
-          title: "Ourah!"), //const MyHomePage(title: 'Flutter Home Page'),
+          primarySwatch: Palette.primaryMate,
+          primaryColorDark: Palette.primaryMate,
+          primaryColorLight: Palette.textMate,
+          backgroundColor: Palette.contrastMate),
+      home: const LoginPage(),
       routes: {
         "Home": (context) => const MyHomePage(title: ""),
         "MenuSelection": (context) => const MenuSelection(),
@@ -43,14 +45,14 @@ class _MyHomePageState extends State<MyHomePage> {
   final Map<String, double> padding = {"width": 15, "height": 15};
   void _incrementCounter() {
     setState(() {
-      debugPrint("$_counter += $_increment");
+      dprint("$_counter += $_increment");
       _counter += _increment;
     });
   }
 
   void _resetCounter() {
     setState(() {
-      debugPrint("Reset Counter");
+      dprint("Reset Counter");
       _counter = 0;
     });
   }
