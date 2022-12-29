@@ -12,7 +12,7 @@ class _LoginPageState extends State<LoginPage> {
   String? _user = "", _pass = "";
   String? userSession;
 
-  String? validateEmail(String? value) {
+  String? _validateEmail(String? value) {
     if (value!.isEmpty) {
       String e = "Please enter an email address";
       dprint(e);
@@ -26,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
     return null; // return null to validate complete
   }
 
-  String? validatePassword(String? value) {
+  String? _validatePassword(String? value) {
     const int lessCharacters = 6;
     if (value!.isEmpty) {
       String e = "Please enter a password.";
@@ -51,6 +51,15 @@ class _LoginPageState extends State<LoginPage> {
     return null; // return null to validate complete
   }
 
+  void _loginSubmission() {
+    final form = _formKey.currentState;
+    dprint("Logging in.. ${_formKey} | user : ${[_user?.length, _user]} | pass : ${[_pass?.length, _pass]}");
+    if (form!.validate()) {
+      form.save();
+      dprint("$form has been saved.");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
               decoration: const InputDecoration(labelText: 'Email'),
               initialValue: _user,
               onChanged: (value) => _user = value,
-              validator: validateEmail,
+              validator: _validateEmail,
             ),
             const SizedBox(
               width: 100,
@@ -76,16 +85,10 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: true,
               initialValue: _pass,
               onChanged: (value) => _pass = value,
-              validator: validatePassword,
+              validator: _validatePassword,
             ),
             TextButton(
-              onPressed: () {
-                dprint(
-                    "Logging in.. ${_formKey} | user : ${[_user?.length, _user]} | pass : ${[_pass?.length, _pass]}");
-                if (_formKey.currentState!.validate()) {
-                  dprint("validated login");
-                }
-              },
+              onPressed: _loginSubmission,
               child: const Text('Login'),
             ),
           ],
