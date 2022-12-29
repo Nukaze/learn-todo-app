@@ -8,13 +8,54 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  Key? _formKey;
-  String? _user, _pass, userSession;
+  final _formKey = GlobalKey<FormState>();
+  String? _user = "", _pass = "";
+  String? userSession;
+
+  String? validateEmail(String? value) {
+    if (value!.isEmpty) {
+      String e = "Please enter an email address";
+      dprint(e);
+      return e;
+    }
+    if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
+      String e = "Please enter a valid email address.";
+      dprint(e);
+      return e;
+    }
+    return null; // return null to validate complete
+  }
+
+  String? validatePassword(String? value) {
+    const int lessCharacters = 6;
+    if (value!.isEmpty) {
+      String e = "Please enter a password.";
+      dprint(e);
+      return e;
+    }
+    if (value.length < lessCharacters) {
+      String e = "Please enter a password at least $lessCharacters characters.";
+      dprint(e);
+      return e;
+    }
+    if (!RegExp(r"[a-zA-z]").hasMatch(value)) {
+      String e = "Password must contain at least one letter.";
+      dprint(e);
+      return e;
+    }
+    if (!RegExp(r"[0-9]").hasMatch(value)) {
+      String e = "Password must contain at least one digit.";
+      dprint(e);
+      return e;
+    }
+    return null; // return null to validate complete
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
       ),
       body: Form(
         key: _formKey,
@@ -22,35 +63,28 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             TextFormField(
               decoration: const InputDecoration(labelText: 'Email'),
-              // validator: (value) {
-              // if (value!.isEmpty) {
-              //   dprint('Please enter a valid email');
-              // }
-              // return null;
-              // },
+              initialValue: _user,
               onChanged: (value) => _user = value,
+              validator: validateEmail,
+            ),
+            const SizedBox(
+              width: 100,
+              height: 25,
             ),
             TextFormField(
               decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,
-              // validator: (value) {
-              //   if (value!.isEmpty) {
-              //     dprint("Please enter a valid password");
-              //   }
-              //   return null;
-              // },
+              initialValue: _pass,
               onChanged: (value) => _pass = value,
+              validator: validatePassword,
             ),
             TextButton(
               onPressed: () {
-                if (_user!.isEmpty || _user!.length < 6) {
-                  dprint("Please enter email and must be at least 6 characters");
-                  return;
-                } else if (_pass!.isEmpty || _pass!.length < 6) {
-                  dprint("Please enter password and must be at least 6 characters");
-                  return;
+                dprint(
+                    "Logging in.. ${_formKey} | user : ${[_user?.length, _user]} | pass : ${[_pass?.length, _pass]}");
+                if (_formKey.currentState!.validate()) {
+                  dprint("validated login");
                 }
-                dprint("Loging in.. ${_formKey} | user : ${[_user?.length, _user]} | pass : ${[_pass?.length, _pass]}");
               },
               child: const Text('Login'),
             ),
@@ -108,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
     //       ),
     //     ],
     //   ),
-    //   child: const Text("MBTi Login\nนะจ๊ะ!",
+    //   child: const Text("MBTi Login\n นะจ๊ะ!",
     //       style: TextStyle(
     //         color: Palette.text,
     //         fontSize: 56,
