@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'tools.dart';
+import 'database.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,14 +12,20 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   String? _user = "", _pass = "";
   String? userSession;
-
+  final FocusNode _focusEmail = FocusNode();
+  final FocusNode _focusPassword = FocusNode();
+  bool _invalidEmail = false;
   String? _validateEmail(String? value) {
     if (value!.isEmpty) {
+      _focusEmail.requestFocus();
+      _invalidEmail = true;
       String e = "Please enter an email address";
       dprint(e);
       return e;
     }
     if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
+      _focusEmail.requestFocus();
+      _invalidEmail = true;
       String e = "Please enter a valid email address.";
       dprint(e);
       return e;
@@ -31,21 +38,33 @@ class _LoginPageState extends State<LoginPage> {
     if (value!.isEmpty) {
       String e = "Please enter a password.";
       dprint(e);
+      if (!_invalidEmail) {
+        _focusPassword.requestFocus();
+      }
       return e;
     }
     if (value.length < lessCharacters) {
       String e = "Please enter a password at least $lessCharacters characters.";
       dprint(e);
+      if (!_invalidEmail) {
+        _focusPassword.requestFocus();
+      }
       return e;
     }
     if (!RegExp(r"[a-zA-z]").hasMatch(value)) {
       String e = "Password must contain at least one letter.";
       dprint(e);
+      if (!_invalidEmail) {
+        _focusPassword.requestFocus();
+      }
       return e;
     }
     if (!RegExp(r"[0-9]").hasMatch(value)) {
       String e = "Password must contain at least one digit.";
       dprint(e);
+      if (!_invalidEmail) {
+        _focusPassword.requestFocus();
+      }
       return e;
     }
     return null; // return null to validate complete
@@ -62,6 +81,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    Sqlitebase db = Sqlitebase();
+    db.createDatabasePath("2test1");
+    dprint("db = $db");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
@@ -75,6 +97,7 @@ class _LoginPageState extends State<LoginPage> {
               initialValue: _user,
               onChanged: (value) => _user = value,
               validator: _validateEmail,
+              focusNode: _focusEmail,
             ),
             const SizedBox(
               width: 100,
@@ -86,6 +109,7 @@ class _LoginPageState extends State<LoginPage> {
               initialValue: _pass,
               onChanged: (value) => _pass = value,
               validator: _validatePassword,
+              focusNode: _focusPassword,
             ),
             TextButton(
               onPressed: _loginSubmission,
