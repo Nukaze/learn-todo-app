@@ -40,13 +40,19 @@ class _TodoListState extends State<TodoList> {
           icon: Icon(todoList[todoIndex]["icon"]),
           onPressed: () {
             setState(() {
-              !taskSelected.contains(todoIndex) ? taskSelected.add(todoIndex) : taskSelected.remove(todoIndex);
-              taskSelected.contains(todoIndex)
-                  ? todoList[todoIndex]["icon"] = iconItemCheck
-                  : todoList[todoIndex]["icon"] = iconItemUndone;
-              taskSelected.contains(todoIndex)
-                  ? todoList[todoIndex]["status"] = "checked"
-                  : todoList[todoIndex]["status"] = "undone";
+              dprint("${todoList[todoIndex]}");
+              dprint(todoList[todoIndex]["status"] != "done");
+              if (todoList[todoIndex]["status"] != "done") {
+                if (taskSelected.contains(todoIndex)) {
+                  taskSelected.remove(todoIndex);
+                  todoList[todoIndex]["icon"] = iconItemUndone;
+                  todoList[todoIndex]["status"] = "undone";
+                } else {
+                  taskSelected.add(todoIndex);
+                  todoList[todoIndex]["icon"] = iconItemCheck;
+                  todoList[todoIndex]["status"] = "checked";
+                }
+              }
               dprint("taskSelected = $taskSelected");
             });
           },
@@ -80,9 +86,7 @@ class _TodoListState extends State<TodoList> {
             padding(),
             FloatingActionButton(
               heroTag: "completeTodoBtn",
-              onPressed: () {
-                dprint("eiei");
-              },
+              onPressed: _completeTodo,
               backgroundColor: Palette.contrast,
               child: const Icon(Icons.task_alt),
             ),
@@ -186,8 +190,33 @@ class _TodoListState extends State<TodoList> {
   }
 
   void _completeTodo() {
+    void completeSubmission() {
+      dprint("completeSubmission..");
+      setState(() {
+        for (Map<String, dynamic> v in todoList) {
+          if (v["status"] == "checked") {
+            v["status"] = "done";
+            v["icon"] = Icons.done_all_rounded;
+          }
+        }
+        destroy(context);
+      });
+    }
+
     setState(() {
       dprint("Completing");
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Complete task"),
+              content: const Text("Are you want to complete task you chose?\n(you cannot edit after complete task)"),
+              actions: [
+                TextButton(onPressed: completeSubmission, child: const Text("Complete task!")),
+                TextButton(onPressed: () => destroy(context), child: const Text("Cancel"))
+              ],
+            );
+          });
     });
   }
 }
