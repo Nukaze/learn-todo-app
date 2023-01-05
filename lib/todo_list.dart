@@ -106,7 +106,7 @@ class _TodoListState extends State<TodoList> {
     void addSubmission(String value) {
       if (value.isNotEmpty) {
         setState(() {
-          todoList.add({"content": value, "status": "undone", "icon": iconItemUndone});
+          todoList.add({"content": value.trim(), "status": "undone", "icon": iconItemUndone});
         });
       } else {
         dprint("value is empty");
@@ -181,7 +181,7 @@ class _TodoListState extends State<TodoList> {
               title: const Text("Delete task"),
               content: const Text("Are you sure you want to delete task you chose?"),
               actions: [
-                TextButton(onPressed: deleteSubmission, child: const Text("Delete")),
+                TextButton(onPressed: deleteSubmission, child: const Text("Delete!")),
                 TextButton(onPressed: () => destroy(context), child: const Text("Cancel"))
               ],
             );
