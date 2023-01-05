@@ -10,9 +10,11 @@ class TodoList extends StatefulWidget {
 
 class _TodoListState extends State<TodoList> {
   IconData addingIcon = Icons.add_circle_rounded;
-  static const IconData itemUndoneIcon = Icons.radio_button_unchecked_rounded;
+  static const IconData iconItemUndone = Icons.radio_button_unchecked_rounded;
+  static const IconData iconItemCheck = Icons.check_circle;
+  static const IconData iconItemDone = Icons.done_all_rounded;
   List<Map<String, dynamic>> todoList = [
-    {"content": "complete the todo app!", "status": "undone", "icon": itemUndoneIcon}
+    {"content": "complete the todo app!", "status": "undone", "icon": iconItemUndone}
   ];
   List<int> taskSelected = [];
   @override
@@ -40,8 +42,11 @@ class _TodoListState extends State<TodoList> {
             setState(() {
               !taskSelected.contains(todoIndex) ? taskSelected.add(todoIndex) : taskSelected.remove(todoIndex);
               taskSelected.contains(todoIndex)
-                  ? todoList[todoIndex]["icon"] = Icons.check_circle
-                  : todoList[todoIndex]["icon"] = itemUndoneIcon;
+                  ? todoList[todoIndex]["icon"] = iconItemCheck
+                  : todoList[todoIndex]["icon"] = iconItemUndone;
+              taskSelected.contains(todoIndex)
+                  ? todoList[todoIndex]["status"] = "checked"
+                  : todoList[todoIndex]["status"] = "undone";
               dprint("taskSelected = $taskSelected");
             });
           },
@@ -84,21 +89,7 @@ class _TodoListState extends State<TodoList> {
             padding(),
             FloatingActionButton(
               heroTag: "deleteTodoBtn",
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text("Deleting"),
-                        icon: const Icon(Icons.snowboarding),
-                        content: const Text("Are sure to delete your todo you chose"),
-                        actions: [
-                          TextButton(onPressed: _deleteTodo, child: const Text("Yes")),
-                          TextButton(onPressed: () => {Navigator.of(context).pop()}, child: const Text("No")),
-                        ],
-                      );
-                    });
-              },
+              onPressed: _deleteTodo,
               backgroundColor: Palette.setColor("#777777"),
               child: const Icon(Icons.delete_rounded),
             ),
@@ -111,7 +102,7 @@ class _TodoListState extends State<TodoList> {
     void addSubmission(String value) {
       if (value.isNotEmpty) {
         setState(() {
-          todoList.add({"content": value, "status": "undone", "icon": itemUndoneIcon});
+          todoList.add({"content": value, "status": "undone", "icon": iconItemUndone});
         });
       } else {
         dprint("value is empty");
@@ -164,8 +155,33 @@ class _TodoListState extends State<TodoList> {
   }
 
   void _deleteTodo() {
+    void deleteSubmission() {
+      dprint("todo list length = ${todoList.length}");
+      dprint("task selected = $taskSelected");
+      setState(() {
+        todoList.removeWhere((todo) => todo["status"] == "checked");
+        taskSelected.clear();
+        destroy(context);
+        dprint("deleted!!");
+      });
+      dprint("todo list length = ${todoList.length}");
+      dprint("task selected = $taskSelected");
+    }
+
     setState(() {
       dprint("Deleting");
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Delete task"),
+              content: const Text("Are you sure you want to delete task you chose?"),
+              actions: [
+                TextButton(onPressed: deleteSubmission, child: const Text("Delete")),
+                TextButton(onPressed: () => destroy(context), child: const Text("Cancel"))
+              ],
+            );
+          });
     });
   }
 
