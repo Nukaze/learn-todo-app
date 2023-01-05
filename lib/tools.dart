@@ -36,6 +36,7 @@ void navigateTo(BuildContext context, var pageName) {
 }
 
 class Palette {
+  static bool debug = false;
   static const Map<String, String> _hexPalette = {
     "primary": "#112B3C",
     "secondary": "#205375",
@@ -56,12 +57,16 @@ class Palette {
     int r = int.parse(hex.substring(0, 2), radix: 16);
     int g = int.parse(hex.substring(2, 4), radix: 16);
     int b = int.parse(hex.substring(4, 6), radix: 16);
-    dprint([r, g, b, 1]);
+    if (debug ?? false) {
+      dprint([r, g, b, 1]);
+    }
     return [r, g, b, 1];
   }
 
   static MaterialColor setColor(String hexCode) {
-    dprint(hexCode);
+    if (debug ?? false) {
+      dprint(hexCode);
+    }
     hexCode = "FF${hexCode.trim().substring(1)}";
     Color color = Color(int.parse(hexCode, radix: 16));
     MaterialColor customMaterialColor = MaterialColor(color.value, <int, Color>{
@@ -76,7 +81,9 @@ class Palette {
       800: color.withOpacity(.9),
       900: color.withOpacity(1),
     });
-    dprint(customMaterialColor);
+    if (debug ?? false) {
+      dprint(customMaterialColor);
+    }
     return customMaterialColor;
   }
 }
