@@ -10,6 +10,8 @@ class TodoList extends StatefulWidget {
 
 class _TodoListState extends State<TodoList> {
   IconData addingIcon = Icons.add_circle_rounded;
+  List<String> todoList = ["wowoza"];
+  List<int> todoSelected = [];
   @override
   Widget build(BuildContext context) {
     return todoApp();
@@ -20,14 +22,32 @@ class _TodoListState extends State<TodoList> {
       appBar: AppBar(
         title: Text("[ Todo List ] ${widget.username}"),
       ),
-      // body: todoSection(),
+      body: todoSection(),
       floatingActionButton: todoButtonSection(),
     );
   }
 
-  // Widget todoSection() {
-  //   return;
-  // }
+  Widget todoSection() {
+    Widget todoItem(int todoIndex) {
+      return ListTile(
+        title: Text(todoList[todoIndex]),
+        trailing: IconButton(
+          icon: const Icon(Icons.ac_unit),
+          onPressed: () {
+            todoSelected.add(todoIndex);
+            dprint("todoSelected = $todoSelected");
+          },
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: todoList.length,
+      itemBuilder: (context, index) {
+        return todoItem(index);
+      },
+    );
+  }
 
   Widget todoButtonSection() {
     padding({double width = 15, double height = 15}) => SizedBox(width: width, height: height);
@@ -37,7 +57,8 @@ class _TodoListState extends State<TodoList> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             FloatingActionButton.extended(
-              label: const Text("Add Todo"),
+              label: const Text("Add Task"),
+              tooltip: "Add task",
               icon: Icon(addingIcon),
               heroTag: "addTodoBtn",
               onPressed: _addTodo,
@@ -78,9 +99,59 @@ class _TodoListState extends State<TodoList> {
   }
 
   void _addTodo() {
+    TextEditingController taskController = TextEditingController();
+    void addSubmission(String value) {
+      if (value.isNotEmpty) {
+        setState(() {
+          todoList.add(value);
+        });
+      } else {
+        dprint("value is empty");
+      }
+      Navigator.pop(context);
+    }
+
     setState(() {
-      addingIcon = addingIcon == Icons.add_circle_rounded ? Icons.circle_outlined : Icons.add_circle_rounded;
-      dprint("Add todo");
+      addingIcon = Icons.circle;
+      dprint("Add todo task");
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('New task'),
+              content: TextField(
+                autofocus: true,
+                controller: taskController,
+                onSubmitted: (val) {
+                  addSubmission(val);
+                },
+                decoration: const InputDecoration(
+                  hintText: 'Enter your task to do...',
+                  contentPadding: EdgeInsets.all(16.0),
+                ),
+              ),
+              actions: [
+                TextButton.icon(
+                  onPressed: () {
+                    addSubmission(taskController.text);
+                  },
+                  icon: const Icon(Icons.add_circle_rounded),
+                  label: const Text("Add Task"),
+                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Cancel"))
+              ],
+            );
+          }).then((value) {
+        if (value == null) {
+          setState(() {
+            addingIcon = Icons.add_circle_rounded;
+          });
+        }
+      });
     });
   }
 
