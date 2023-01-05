@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 void dprint(dynamic msg) => debugPrint("[DEBUG_PRINT]: ${msg.toString()}");
 
+void destroy(BuildContext context) => Navigator.pop(context);
+
 void navigateTo(BuildContext context, var pageName) {
   dprint("[ Navigate to $pageName.. ]");
   try {
