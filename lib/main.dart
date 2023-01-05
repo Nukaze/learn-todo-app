@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
           primaryColorDark: Palette.primaryMate,
           primaryColorLight: Palette.textMate,
           backgroundColor: Palette.contrastMate),
-      home: const LoginPage(),
+      home: const MyHomePage(title: "Ourah!"),
       routes: {
         "Home": (context) => const MyHomePage(title: ""),
         "MenuSelection": (context) => const MenuSelection(),
@@ -60,72 +60,83 @@ class _MyHomePageState extends State<MyHomePage> {
   void _toggleWifi() {
     setState(() {
       _isWifiOn = !_isWifiOn;
-      wifiIcon =
-          wifiIcon == Icons.wifi_off ? Icons.wifi_rounded : Icons.wifi_off;
+      wifiIcon = wifiIcon == Icons.wifi_off ? Icons.wifi_rounded : Icons.wifi_off;
       _increment = _isWifiOn ? 5 : 1;
     });
   }
 
+  scaffold() {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: todo(),
+        floatingActionButton: floatingButton() // This trailing comma makes auto-formatting nicer for build methods.
+        );
+  }
+
+  floatingButton() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        FloatingActionButton(
+          heroTag: null,
+          onPressed: _incrementCounter,
+          child: const Icon(Icons.add_circle_rounded),
+        ),
+        SizedBox(
+          width: padding["width"],
+          height: padding["height"],
+        ),
+        FloatingActionButton(
+          heroTag: null,
+          onPressed: _resetCounter,
+          child: const Icon(Icons.refresh_rounded),
+        ),
+        SizedBox(
+          width: padding["width"],
+          height: padding["height"],
+        ),
+        FloatingActionButton(
+          heroTag: "wifiToggleBtn",
+          onPressed: _toggleWifi,
+          child: Icon(wifiIcon),
+        ),
+        SizedBox(
+          width: padding["width"],
+          height: padding["height"],
+        ),
+        FloatingActionButton(
+          heroTag: "menuSelectionBtn",
+          onPressed: () {
+            navigateTo(context, "MenuSelection");
+          },
+          child: const Icon(Icons.fastfood_outlined),
+        )
+      ],
+    );
+  }
+
+  todo() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const Text(
+            "You have pushed the button this many times:\n",
+            style: TextStyle(fontSize: 16),
+          ),
+          Text(
+            "$_counter times!",
+            style: Theme.of(context).textTheme.headline2,
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              "You have pushed the button this many times:\n",
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              "$_counter times!",
-              style: Theme.of(context).textTheme.headline2,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            heroTag: null,
-            onPressed: _incrementCounter,
-            child: const Icon(Icons.add_circle_rounded),
-          ),
-          SizedBox(
-            width: padding["width"],
-            height: padding["height"],
-          ),
-          FloatingActionButton(
-            heroTag: null,
-            onPressed: _resetCounter,
-            child: const Icon(Icons.refresh_rounded),
-          ),
-          SizedBox(
-            width: padding["width"],
-            height: padding["height"],
-          ),
-          FloatingActionButton(
-            heroTag: "wifiToggleBtn",
-            onPressed: _toggleWifi,
-            child: Icon(wifiIcon),
-          ),
-          SizedBox(
-            width: padding["width"],
-            height: padding["height"],
-          ),
-          FloatingActionButton(
-            heroTag: "menuSelectionBtn",
-            onPressed: () {
-              navigateTo(context, "MenuSelection");
-            },
-            child: const Icon(Icons.fastfood_outlined),
-          )
-        ],
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    return scaffold();
   }
 }
