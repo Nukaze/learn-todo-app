@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'tools.dart';
 import 'menu_selection.dart';
 import 'login.dart';
+import 'todo_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,11 +21,13 @@ class MyApp extends StatelessWidget {
           primaryColorDark: Palette.primaryMate,
           primaryColorLight: Palette.textMate,
           backgroundColor: Palette.contrastMate),
-      home: const MyHomePage(title: "Ourah!"),
+      // home: const MyHomePage(title: "Ourah!"),
+      home: const TodoList(username: "Fuchiwara"),
       routes: {
         "Home": (context) => const MyHomePage(title: ""),
         "MenuSelection": (context) => const MenuSelection(),
         "Login": (context) => const LoginPage(),
+        "TodoList": (context) => const TodoList(),
       },
     );
   }
@@ -43,6 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isWifiOn = false;
   IconData wifiIcon = Icons.wifi_off;
   final Map<String, double> padding = {"width": 15, "height": 15};
+
   void _incrementCounter() {
     setState(() {
       dprint("$_counter += $_increment");
@@ -65,17 +69,8 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  scaffold() {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: todo(),
-        floatingActionButton: floatingButton() // This trailing comma makes auto-formatting nicer for build methods.
-        );
-  }
-
-  floatingButton() {
+  // App widget builder
+  Widget floatingButtons() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -117,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  todo() {
+  Widget mainApp() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -135,8 +130,18 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Widget scaffoldApp() {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: mainApp(),
+        floatingActionButton: floatingButtons() // This trailing comma makes auto-formatting nicer for build methods.
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return scaffold();
+    return scaffoldApp();
   }
 }
