@@ -10,8 +10,9 @@ class TodoList extends StatefulWidget {
 
 class _TodoListState extends State<TodoList> {
   IconData addingIcon = Icons.add_circle_rounded;
+  IconData todoItemIcon = Icons.ac_unit;
   List<String> todoList = ["wowoza"];
-  List<int> todoSelected = [];
+  List<int> taskSelected = [];
   @override
   Widget build(BuildContext context) {
     return todoApp();
@@ -32,10 +33,12 @@ class _TodoListState extends State<TodoList> {
       return ListTile(
         title: Text(todoList[todoIndex]),
         trailing: IconButton(
-          icon: const Icon(Icons.ac_unit),
+          icon: Icon(taskSelected.contains(todoIndex) ? Icons.check_circle : Icons.ac_unit),
           onPressed: () {
-            todoSelected.add(todoIndex);
-            dprint("todoSelected = $todoSelected");
+            setState(() {
+              !taskSelected.contains(todoIndex) ? taskSelected.add(todoIndex) : taskSelected.remove(todoIndex);
+              dprint("taskSelected = $taskSelected");
+            });
           },
         ),
       );
