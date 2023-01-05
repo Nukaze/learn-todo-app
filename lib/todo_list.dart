@@ -10,8 +10,10 @@ class TodoList extends StatefulWidget {
 
 class _TodoListState extends State<TodoList> {
   IconData addingIcon = Icons.add_circle_rounded;
-  IconData todoItemIcon = Icons.ac_unit;
-  List<String> todoList = ["wowoza"];
+  static const IconData itemUndoneIcon = Icons.radio_button_unchecked_rounded;
+  List<Map<String, dynamic>> todoList = [
+    {"content": "complete the todo app!", "status": "undone", "icon": itemUndoneIcon}
+  ];
   List<int> taskSelected = [];
   @override
   Widget build(BuildContext context) {
@@ -31,12 +33,15 @@ class _TodoListState extends State<TodoList> {
   Widget todoSection() {
     Widget todoItem(int todoIndex) {
       return ListTile(
-        title: Text(todoList[todoIndex]),
+        title: Text(todoList[todoIndex]["content"]!),
         trailing: IconButton(
-          icon: Icon(taskSelected.contains(todoIndex) ? Icons.check_circle : Icons.ac_unit),
+          icon: Icon(todoList[todoIndex]["icon"]),
           onPressed: () {
             setState(() {
               !taskSelected.contains(todoIndex) ? taskSelected.add(todoIndex) : taskSelected.remove(todoIndex);
+              taskSelected.contains(todoIndex)
+                  ? todoList[todoIndex]["icon"] = Icons.check_circle
+                  : todoList[todoIndex]["icon"] = itemUndoneIcon;
               dprint("taskSelected = $taskSelected");
             });
           },
@@ -106,7 +111,7 @@ class _TodoListState extends State<TodoList> {
     void addSubmission(String value) {
       if (value.isNotEmpty) {
         setState(() {
-          todoList.add(value);
+          todoList.add({"content": value, "status": "undone", "icon": itemUndoneIcon});
         });
       } else {
         dprint("value is empty");
