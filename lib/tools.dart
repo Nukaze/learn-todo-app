@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 void dprint(dynamic msg) => debugPrint("[DEBUG_PRINT]: ${msg.toString()}");
 
 void destroy(BuildContext context) => Navigator.pop(context);
+
+void getPath({dynamic v}) async {
+  var dir = await getApplicationDocumentsDirectory();
+  dprint("My document dir = $dir");
+  await dir.create(recursive: true);
+  dprint("dir path = ${dir.path}");
+}
 
 void navigateTo(BuildContext context, var pageName) {
   dprint("[ Navigate to $pageName.. ]");
