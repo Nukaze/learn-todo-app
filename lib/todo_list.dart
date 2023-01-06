@@ -13,12 +13,25 @@ class _TodoListState extends State<TodoList> {
   static const IconData iconItemUndone = Icons.radio_button_unchecked_rounded;
   static const IconData iconItemCheck = Icons.check_circle;
   static const IconData iconItemDone = Icons.done_all_rounded;
+  static List<int> taskSelected = [];
   List<Map<String, dynamic>> todoList = [
-    {"content": "complete the todo app!", "status": "undone", "icon": iconItemUndone}
+    {
+      //mock up data1
+      "content": "Complete the todo app!",
+      "status": "undone",
+      "icon": iconItemUndone,
+    },
+    {
+      //mock up data2
+      "content": "Learn mobile app database",
+      "status": "undone",
+      "icon": iconItemUndone,
+    }
   ];
-  List<int> taskSelected = [];
+
   @override
   Widget build(BuildContext context) {
+    getPath();
     return todoApp();
   }
 
@@ -196,7 +209,7 @@ class _TodoListState extends State<TodoList> {
         for (Map<String, dynamic> v in todoList) {
           if (v["status"] == "checked") {
             v["status"] = "done";
-            v["icon"] = Icons.done_all_rounded;
+            v["icon"] = iconItemDone;
           }
         }
         destroy(context);
