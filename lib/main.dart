@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'tools.dart';
-import 'menu_selection.dart';
 import 'login.dart';
 import 'todo_list.dart';
 
@@ -25,7 +24,6 @@ class MyApp extends StatelessWidget {
       home: const TodoList(username: "Fuchiwara"),
       routes: {
         "Home": (context) => const MyHomePage(title: ""),
-        "MenuSelection": (context) => const MenuSelection(),
         "Login": (context) => const LoginPage(),
         "TodoList": (context) => const TodoList(),
       },
