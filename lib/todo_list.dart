@@ -9,11 +9,16 @@ class TodoList extends StatefulWidget {
 }
 
 class _TodoListState extends State<TodoList> {
-  IconData addingIcon = Icons.add_circle_rounded;
+  IconData addingBtnIcon = Icons.add_circle_rounded;
+  final IconData completeBtnIcon = Icons.task_alt;
+  final IconData deleteBtnIcon = Icons.delete_rounded;
   static const IconData iconItemUndone = Icons.radio_button_unchecked_rounded;
   static const IconData iconItemCheck = Icons.check_circle;
   static const IconData iconItemDone = Icons.done_all_rounded;
   static List<int> taskSelected = [];
+  bool isAddButtonSelected = false;
+  bool isCompleteButtonSelected = false;
+  bool isDeleteButtonSelected = false;
   List<Map<String, dynamic>> todoList = [
     {
       //mock up data1
@@ -88,47 +93,70 @@ class _TodoListState extends State<TodoList> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            FloatingActionButton.extended(
-              label: const Text("Add Task"),
-              tooltip: "Add task",
-              icon: Icon(addingIcon),
-              heroTag: "addTodoBtn",
-              onPressed: _addTodo,
-              backgroundColor: Palette.secondary,
-            ),
+            isAddButtonSelected
+                ? FloatingActionButton.extended(
+                    label: const Text("Add Task"),
+                    tooltip: "Add task",
+                    icon: Icon(addingBtnIcon),
+                    heroTag: "addTodoBtn",
+                    onPressed: _addTodo,
+                    backgroundColor: Palette.secondary)
+                : FloatingActionButton(
+                    tooltip: "Add task",
+                    child: Icon(addingBtnIcon),
+                    heroTag: "addTodoBtn",
+                    onPressed: _addTodo,
+                    backgroundColor: Palette.secondary),
             padding(),
-            FloatingActionButton(
-              heroTag: "completeTodoBtn",
-              onPressed: _completeTodo,
-              backgroundColor: Palette.contrast,
-              child: const Icon(Icons.task_alt),
-            ),
+            isCompleteButtonSelected
+                ? FloatingActionButton.extended(
+                    label: const Text("Complete task"),
+                    tooltip: "Add task",
+                    icon: Icon(completeBtnIcon),
+                    heroTag: "completeTodoBtn",
+                    onPressed: _completeTodo,
+                    backgroundColor: Palette.contrast)
+                : FloatingActionButton(
+                    heroTag: "completeTodoBtn",
+                    onPressed: _completeTodo,
+                    backgroundColor: Palette.contrast,
+                    child: Icon(completeBtnIcon)),
             padding(),
-            FloatingActionButton(
-              heroTag: "deleteTodoBtn",
-              onPressed: _deleteTodo,
-              backgroundColor: Palette.setColor("#777777"),
-              child: const Icon(Icons.delete_rounded),
-            ),
+            isDeleteButtonSelected
+                ? FloatingActionButton.extended(
+                    heroTag: "deleteTodoBtn",
+                    onPressed: _deleteTodo,
+                    backgroundColor: Palette.setColor("#777777"),
+                    icon: const Icon(Icons.delete_rounded),
+                    label: const Text("Delete Task"))
+                : FloatingActionButton(
+                    heroTag: "deleteTodoBtn",
+                    onPressed: _deleteTodo,
+                    backgroundColor: Palette.setColor("#777777"),
+                    child: const Icon(Icons.delete_rounded)),
           ],
         ));
   }
 
-  void _addTodo() {
+  void _addTodo() async {
     TextEditingController taskController = TextEditingController();
+
     void addSubmission(String value) {
-      if (value.isNotEmpty) {
+      final bool isNotBlankOnly = !RegExp(r"^\s*$").hasMatch(value);
+      if (value.isNotEmpty && isNotBlankOnly) {
         setState(() {
           todoList.add({"content": value.trim(), "status": "undone", "icon": iconItemUndone});
         });
+        destroy(context);
+        alert(context: context, title: "Successfully", message: "Your Task has been added successfully.");
       } else {
-        dprint("value is empty");
+        alert(context: context, title: "Error", message: "Task should not be empty, \nPlease fill a task.");
       }
-      Navigator.pop(context);
     }
 
     setState(() {
-      addingIcon = Icons.circle;
+      addingBtnIcon = Icons.circle;
+      isAddButtonSelected = true;
       dprint("Add todo task");
       showDialog(
           context: context,
@@ -152,7 +180,7 @@ class _TodoListState extends State<TodoList> {
                     addSubmission(taskController.text);
                   },
                   icon: const Icon(Icons.add_circle_rounded),
-                  label: const Text("Add Task"),
+                  label: const Text("Add Task!"),
                 ),
                 TextButton(
                     onPressed: () {
@@ -161,13 +189,46 @@ class _TodoListState extends State<TodoList> {
                     child: const Text("Cancel"))
               ],
             );
-          }).then((value) {
-        if (value == null) {
-          setState(() {
-            addingIcon = Icons.add_circle_rounded;
-          });
+          }).then((value) => setState(() {
+            addingBtnIcon = Icons.add_circle_rounded;
+            isAddButtonSelected = false;
+          }));
+    });
+  }
+
+  void _completeTodo() {
+    void completeSubmission() {
+      dprint("completeSubmission..");
+      setState(() {
+        for (Map<String, dynamic> v in todoList) {
+          if (v["status"] == "checked") {
+            v["status"] = "done";
+            v["icon"] = iconItemDone;
+          }
         }
+        taskSelected.clear();
+        destroy(context);
       });
+    }
+
+    setState(() {
+      dprint("Completing");
+      isCompleteButtonSelected = true;
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Complete task"),
+              content: Text(
+                  "Are you want to complete [ ${taskSelected.length} ] tasks \nyou chose?\n(you cannot edit after complete task)"),
+              actions: [
+                TextButton(onPressed: completeSubmission, child: const Text("Complete task!")),
+                TextButton(onPressed: () => destroy(context), child: const Text("Cancel"))
+              ],
+            );
+          }).then((value) => setState(() {
+            isCompleteButtonSelected = false;
+          }));
     });
   }
 
@@ -187,49 +248,21 @@ class _TodoListState extends State<TodoList> {
 
     setState(() {
       dprint("Deleting");
+      isDeleteButtonSelected = true;
       showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text("Delete task"),
-              content: const Text("Are you sure you want to delete task you chose?"),
+              content: Text("Are you want to delete [ ${taskSelected.length} ] tasks \nyou chose?"),
               actions: [
                 TextButton(onPressed: deleteSubmission, child: const Text("Delete!")),
                 TextButton(onPressed: () => destroy(context), child: const Text("Cancel"))
               ],
             );
-          });
-    });
-  }
-
-  void _completeTodo() {
-    void completeSubmission() {
-      dprint("completeSubmission..");
-      setState(() {
-        for (Map<String, dynamic> v in todoList) {
-          if (v["status"] == "checked") {
-            v["status"] = "done";
-            v["icon"] = iconItemDone;
-          }
-        }
-        destroy(context);
-      });
-    }
-
-    setState(() {
-      dprint("Completing");
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text("Complete task"),
-              content: const Text("Are you want to complete task you chose?\n(you cannot edit after complete task)"),
-              actions: [
-                TextButton(onPressed: completeSubmission, child: const Text("Complete task!")),
-                TextButton(onPressed: () => destroy(context), child: const Text("Cancel"))
-              ],
-            );
-          });
+          }).then((value) => setState(() {
+            isDeleteButtonSelected = false;
+          }));
     });
   }
 }
