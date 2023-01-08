@@ -1,10 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'tools.dart';
 import 'login.dart';
 import 'todo_list.dart';
 
 void main() {
+  firebasePlayground();
+  dprint("main stopped");
   runApp(const MyApp());
+}
+
+void firebasePlayground() {
+  // final Future<FirebaseApp> firebase = Firebase.initializeApp();
+  // dprint("firebase initialize $firebase");
+
+  // FirebaseApp secApp = Firebase.app("SecondaryApp");
+  // dbFire.ref().child("my_node").set({
+  //   "username": "wowza",
+  //   "password": "abc1234",
+  // });
+  // dprint("firebase data has been write!");
 }
 
 class MyApp extends StatelessWidget {
@@ -21,7 +38,8 @@ class MyApp extends StatelessWidget {
           primaryColorLight: Palette.textMate,
           backgroundColor: Palette.contrastMate),
       // home: const MyHomePage(title: "Ourah!"),
-      home: const TodoList(username: "Fuchiwara"),
+      // home: const TodoList(username: "Fuchiwara"),
+      home: const TodoList(username: "Takumi"),
       routes: {
         "Home": (context) => const MyHomePage(title: ""),
         "Login": (context) => const LoginPage(),
