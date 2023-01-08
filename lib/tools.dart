@@ -98,3 +98,20 @@ class Palette {
     return customMaterialColor;
   }
 }
+
+void alert({BuildContext? context, String title = "{title}", String message = "{content}", String keyAction = "Okay"}) {
+  showDialog(
+      context: context!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => destroy(context),
+              child: Text(keyAction),
+            )
+          ],
+        );
+      });
+}
