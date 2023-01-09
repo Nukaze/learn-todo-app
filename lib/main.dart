@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'tools.dart';
 import 'login.dart';
 import 'todo_list.dart';
+import 'registration.dart';
 
 void main() {
   firebasePlayground();
@@ -38,12 +39,13 @@ class MyApp extends StatelessWidget {
           primaryColorLight: Palette.textMate,
           backgroundColor: Palette.contrastMate),
       // home: const MyHomePage(title: "Ourah!"),
-      // home: const TodoList(username: "Fuchiwara"),
-      home: const TodoList(username: "Takumi"),
+      // home: const TodoList(username: "Takumi"),
+      home: const Registration(),
       routes: {
         "Home": (context) => const MyHomePage(title: ""),
         "Login": (context) => const LoginPage(),
         "TodoList": (context) => const TodoList(),
+        "Registration": (context) => const Registration(),
       },
     );
   }
