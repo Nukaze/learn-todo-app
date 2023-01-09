@@ -87,7 +87,6 @@ class _TodoListState extends State<TodoList> {
   }
 
   Widget todoButtonSection() {
-    padding({double width = 15, double height = 15}) => SizedBox(width: width, height: height);
     return Padding(
         padding: const EdgeInsets.fromLTRB(30, 20, 30, 10),
         child: Row(
@@ -107,7 +106,7 @@ class _TodoListState extends State<TodoList> {
                     heroTag: "addTodoBtn",
                     onPressed: _addTodo,
                     backgroundColor: Palette.secondary),
-            padding(),
+            padbox(),
             isCompleteButtonSelected
                 ? FloatingActionButton.extended(
                     label: const Text("Complete task"),
@@ -121,7 +120,7 @@ class _TodoListState extends State<TodoList> {
                     onPressed: _completeTodo,
                     backgroundColor: Palette.contrast,
                     child: Icon(completeBtnIcon)),
-            padding(),
+            padbox(),
             isDeleteButtonSelected
                 ? FloatingActionButton.extended(
                     heroTag: "deleteTodoBtn",
