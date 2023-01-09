@@ -6,6 +6,8 @@ void dprint(dynamic msg) => debugPrint("[DEBUG_PRINT]: ${msg.toString()}");
 
 void destroy(BuildContext context) => Navigator.pop(context);
 
+padbox({double width = 15, double height = 15}) => SizedBox(width: width, height: height);
+
 void getPath({dynamic v}) async {
   var dir = await getApplicationDocumentsDirectory();
   dprint("My document dir = $dir");
