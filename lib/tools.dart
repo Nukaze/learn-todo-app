@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
+import 'package:intl/intl.dart';
 
 void dprint(dynamic msg) => debugPrint("[DEBUG_PRINT]: ${msg.toString()}");
 
 void destroy(BuildContext context) => Navigator.pop(context);
 
 padbox({double width = 15, double height = 15}) => SizedBox(width: width, height: height);
+
+getUnixTime() => DateTime.now().millisecondsSinceEpoch;
+getFullTime() => DateFormat("yyyy-MM-DD#HH:mm:ss").format(DateTime.now());
+getYmdTime() => DateFormat("yyyy-MMM-DD").format(DateTime.now());
 
 void getPath({dynamic v}) async {
   var dir = await getApplicationDocumentsDirectory();
