@@ -11,6 +11,7 @@ class Registration extends StatefulWidget {
 class _RegistrationState extends State<Registration> {
   String? _user, _pass;
   final _formkey = GlobalKey<FormState>();
+  bool isFormSubmitting = false;
   String? email, password, passwordConfirm;
   final FocusNode _emailNode = FocusNode(), _passwordNode = FocusNode();
   final TextEditingController _emailController = TextEditingController(),
@@ -33,44 +34,46 @@ class _RegistrationState extends State<Registration> {
 
   Widget registerForm() {
     const double heightGap = 15;
+    TextFormField emailField = TextFormField(
+      decoration: const InputDecoration(hintText: "Enter your email", labelText: "Email"),
+      onSaved: (value) => email = value,
+      validator: (value) => _validateEmail(value, isFormSubmitting),
+      focusNode: _emailNode,
+      controller: _emailController,
+    );
+    TextFormField passwordField = TextFormField(
+      decoration: const InputDecoration(hintText: "Enter your password", labelText: "Password"),
+      obscureText: true,
+      onSaved: (value) => password = value,
+      validator: (value) => _validatePassword(value, isFormSubmitting, false),
+      focusNode: _passwordNode,
+      controller: _passwordController,
+    );
+    TextFormField passwordConfirmField = TextFormField(
+      decoration: const InputDecoration(hintText: "Enter confirm password", labelText: "Confirm Password"),
+      obscureText: true,
+      onSaved: (value) => passwordConfirm = value,
+      validator: (value) => _validatePassword(value, isFormSubmitting, true),
+      controller: _passwordConfirmController,
+    );
     return Form(
       key: _formkey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Focus(
-              onFocusChange: (hasFocus) {
-                if (!hasFocus) {
-                  // _validateEmail(_emailController.text, false);
-                  _formSubmission();
-                  dprint("out of email");
-                }
-              },
-              child: TextFormField(
-                decoration: const InputDecoration(hintText: "Enter your email", labelText: "Email"),
-                onSaved: (value) => email = value,
-                validator: (value) => _validateEmail(value, true),
-                focusNode: _emailNode,
-                controller: _emailController,
-              )),
+            onFocusChange: _formValidation,
+            child: emailField,
+          ),
           padbox(height: heightGap),
           Focus(
-              onFocusChange: (hasFocus) => _validateEmail(_emailController.text, false),
-              child: TextFormField(
-                decoration: const InputDecoration(hintText: "Enter your password", labelText: "Password"),
-                obscureText: true,
-                onSaved: (value) => password = value,
-                validator: (value) => _validatePassword(value, false),
-                focusNode: _passwordNode,
-                controller: _passwordController,
-              )),
+            onFocusChange: _formValidation,
+            child: passwordField,
+          ),
           padbox(height: heightGap),
-          TextFormField(
-            decoration: const InputDecoration(hintText: "Enter confirm password", labelText: "Confirm Password"),
-            obscureText: true,
-            onSaved: (value) => passwordConfirm = value,
-            validator: (value) => _validatePassword(value, true),
-            controller: _passwordConfirmController,
+          Focus(
+            onFocusChange: _formValidation,
+            child: passwordConfirmField,
           ),
           padbox(height: heightGap * 1.6),
           ElevatedButton(
@@ -82,7 +85,15 @@ class _RegistrationState extends State<Registration> {
     );
   }
 
+  void _formValidation(hasFocus) {
+    bool hasChanged = !hasFocus;
+    if (hasChanged) {
+      _formkey.currentState!.validate();
+    }
+  }
+
   void _formSubmission() {
+    isFormSubmitting = true;
     final registerForm = _formkey.currentState;
     if (registerForm!.validate()) {
       dprint("Register form is validated");
@@ -91,6 +102,7 @@ class _RegistrationState extends State<Registration> {
       dprint("${_emailController.text} \n${_passwordConfirmController.text}");
     }
     dprint("_formSubmission");
+    isFormSubmitting = false;
   }
 
   String? _validateEmail(String? value, bool onSubmitting) {
@@ -117,11 +129,11 @@ class _RegistrationState extends State<Registration> {
     return null; // return null to validate complete
   }
 
-  String? _validatePassword(String? value, bool isConfirmField) {
+  String? _validatePassword(String? value, bool onSubmitting, bool isConfirmField) {
     const int lessCharacters = 6;
     final String msg = ["password", "confirm password"][isConfirmField ? 1 : 0];
     void passwordReqFocus() {
-      if (!_invalidEmail) {
+      if (!_invalidEmail && onSubmitting) {
         _passwordNode.requestFocus();
       }
     }
