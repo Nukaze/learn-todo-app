@@ -1,3 +1,7 @@
+// import 'package:TodoApp/database_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'tools.dart';
@@ -92,14 +96,26 @@ class _RegistrationState extends State<Registration> {
     }
   }
 
-  void _formSubmission() {
+  void _formSubmission() async {
     isFormSubmitting = true;
     final registerForm = _formkey.currentState;
     if (registerForm!.validate()) {
       dprint("Register form is validated");
       registerForm.save();
-      dprint("${registerForm} is saved");
-      dprint("${_emailController.text} \n${_passwordConfirmController.text}");
+      CollectionReference userRegisterInstance = FirebaseFirestore.instance.collection("users");
+      try {
+        await userRegisterInstance.add({
+          "user_email": email,
+          "user_password": password,
+          "time_created": getFullTime(),
+          "time_unix_created": getUnixTime(),
+        });
+        dprint("register complete!!");
+        alert(context: context, title: "Complete!", message: "Your account has been registered successfully.");
+        registerForm.reset();
+      } catch (e) {
+        dprint("Failed to register with $e");
+      }
     }
     dprint("_formSubmission");
     isFormSubmitting = false;
@@ -112,7 +128,6 @@ class _RegistrationState extends State<Registration> {
       }
       _invalidEmail = true;
       String e = "Please enter an email address";
-      dprint(e);
       return e;
     }
     if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
@@ -121,7 +136,6 @@ class _RegistrationState extends State<Registration> {
       }
       _invalidEmail = true;
       String e = "Please enter a valid email address.";
-      dprint(e);
       return e;
     }
     dprint("Email is OKAY");
@@ -140,33 +154,28 @@ class _RegistrationState extends State<Registration> {
 
     if (value!.isEmpty) {
       String e = "Please enter a $msg.";
-      dprint(e);
       passwordReqFocus();
       return e;
     }
     if (isConfirmField) {
       if (_passwordController.text != _passwordConfirmController.text) {
         String e = "The password and confirm password must match";
-        dprint(e);
         passwordReqFocus();
         return e;
       }
     } else {
       if (value.length < lessCharacters) {
         String e = "Please enter a password at least $lessCharacters characters.";
-        dprint(e);
         passwordReqFocus();
         return e;
       }
       if (!RegExp(r"[a-zA-z]").hasMatch(value)) {
         String e = "Password must contain at least one letter.";
-        dprint(e);
         passwordReqFocus();
         return e;
       }
       if (!RegExp(r"[0-9]").hasMatch(value)) {
         String e = "Password must contain at least one digit.";
-        dprint(e);
         passwordReqFocus();
         return e;
       }
