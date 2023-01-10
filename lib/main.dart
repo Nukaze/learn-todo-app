@@ -9,11 +9,13 @@ import 'registration.dart';
 
 void main() {
   firebasePlayground();
-  dprint("main stopped");
   runApp(const MyApp());
 }
 
-void firebasePlayground() {
+Future<void> firebasePlayground() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  dprint('fb initializeApp');
   // final Future<FirebaseApp> firebase = Firebase.initializeApp();
   // dprint("firebase initialize $firebase");
 
