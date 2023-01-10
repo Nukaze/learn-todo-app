@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'tools.dart';
 
 class Registration extends StatefulWidget {
@@ -39,22 +38,32 @@ class _RegistrationState extends State<Registration> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          TextFormField(
-            decoration: const InputDecoration(hintText: "Enter your email", labelText: "Email"),
-            onSaved: (value) => email = value,
-            validator: _validateEmail,
-            focusNode: _emailNode,
-            controller: _emailController,
-          ),
+          Focus(
+              onFocusChange: (hasFocus) {
+                if (!hasFocus) {
+                  // _validateEmail(_emailController.text, false);
+                  _formSubmission();
+                  dprint("out of email");
+                }
+              },
+              child: TextFormField(
+                decoration: const InputDecoration(hintText: "Enter your email", labelText: "Email"),
+                onSaved: (value) => email = value,
+                validator: (value) => _validateEmail(value, true),
+                focusNode: _emailNode,
+                controller: _emailController,
+              )),
           padbox(height: heightGap),
-          TextFormField(
-            decoration: const InputDecoration(hintText: "Enter your password", labelText: "Password"),
-            obscureText: true,
-            onSaved: (value) => password = value,
-            validator: (value) => _validatePassword(value, false),
-            focusNode: _passwordNode,
-            controller: _passwordController,
-          ),
+          Focus(
+              onFocusChange: (hasFocus) => _validateEmail(_emailController.text, false),
+              child: TextFormField(
+                decoration: const InputDecoration(hintText: "Enter your password", labelText: "Password"),
+                obscureText: true,
+                onSaved: (value) => password = value,
+                validator: (value) => _validatePassword(value, false),
+                focusNode: _passwordNode,
+                controller: _passwordController,
+              )),
           padbox(height: heightGap),
           TextFormField(
             decoration: const InputDecoration(hintText: "Enter confirm password", labelText: "Confirm Password"),
@@ -81,64 +90,74 @@ class _RegistrationState extends State<Registration> {
       dprint("${registerForm} is saved");
       dprint("${_emailController.text} \n${_passwordConfirmController.text}");
     }
+    dprint("_formSubmission");
   }
 
-  String? _validateEmail(String? value) {
+  String? _validateEmail(String? value, bool onSubmitting) {
     if (value!.isEmpty) {
-      _emailNode.requestFocus();
+      if (onSubmitting) {
+        _emailNode.requestFocus();
+      }
       _invalidEmail = true;
       String e = "Please enter an email address";
       dprint(e);
       return e;
     }
     if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
-      _emailNode.requestFocus();
+      if (onSubmitting) {
+        _emailNode.requestFocus();
+      }
       _invalidEmail = true;
       String e = "Please enter a valid email address.";
       dprint(e);
       return e;
     }
+    dprint("Email is OKAY");
     _invalidEmail = false;
     return null; // return null to validate complete
   }
 
-  String? _validatePassword(String? value, bool confirmField) {
+  String? _validatePassword(String? value, bool isConfirmField) {
     const int lessCharacters = 6;
-    void clearPassword() {
+    final String msg = ["password", "confirm password"][isConfirmField ? 1 : 0];
+    void passwordReqFocus() {
       if (!_invalidEmail) {
         _passwordNode.requestFocus();
       }
     }
 
     if (value!.isEmpty) {
-      String e = "Please enter a password.";
+      String e = "Please enter a $msg.";
       dprint(e);
-      clearPassword();
+      passwordReqFocus();
       return e;
     }
-    if (value.length < lessCharacters) {
-      String e = "Please enter a password at least $lessCharacters characters.";
-      dprint(e);
-      clearPassword();
-      return e;
-    }
-    if (!RegExp(r"[a-zA-z]").hasMatch(value)) {
-      String e = "Password must contain at least one letter.";
-      dprint(e);
-      clearPassword();
-      return e;
-    }
-    if (!RegExp(r"[0-9]").hasMatch(value)) {
-      String e = "Password must contain at least one digit.";
-      dprint(e);
-      clearPassword();
-      return e;
-    }
-    if (confirmField && _passwordController.text != _passwordConfirmController.text) {
-      String e = "The password and confirm password must match";
-      dprint(e);
-      clearPassword();
-      return e;
+    if (isConfirmField) {
+      if (_passwordController.text != _passwordConfirmController.text) {
+        String e = "The password and confirm password must match";
+        dprint(e);
+        passwordReqFocus();
+        return e;
+      }
+    } else {
+      if (value.length < lessCharacters) {
+        String e = "Please enter a password at least $lessCharacters characters.";
+        dprint(e);
+        passwordReqFocus();
+        return e;
+      }
+      if (!RegExp(r"[a-zA-z]").hasMatch(value)) {
+        String e = "Password must contain at least one letter.";
+        dprint(e);
+        passwordReqFocus();
+        return e;
+      }
+      if (!RegExp(r"[0-9]").hasMatch(value)) {
+        String e = "Password must contain at least one digit.";
+        dprint(e);
+        passwordReqFocus();
+        return e;
+      }
     }
     return null; // return null to validate complete
   }
