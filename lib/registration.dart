@@ -1,9 +1,8 @@
-// import 'package:TodoApp/database_controller.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'authentication.dart';
 import 'tools.dart';
 
 class Registration extends StatefulWidget {
@@ -103,7 +102,7 @@ class _RegistrationState extends State<Registration> {
       final QuerySnapshot qrSnapshot =
           await FirebaseFirestore.instance.collection("users").where("user_email", isEqualTo: email).get();
       bool isAlreadyRegistered = qrSnapshot.docs.isNotEmpty;
-      dprint("qrsnapshot is $isAlreadyRegistered = ${qrSnapshot.docs}");
+      dprint("query snapshot is $isAlreadyRegistered = ${qrSnapshot.docs}");
       if (isAlreadyRegistered) {
         alert(
             context: context,
@@ -111,25 +110,28 @@ class _RegistrationState extends State<Registration> {
             message: "This email is already registered, Please try again with another email.");
         return;
       }
+      Map<String, String> userCredential = getAuthPasswordGenerate(password!);
       CollectionReference userRegisterInstance = FirebaseFirestore.instance.collection("users");
       try {
         await userRegisterInstance.add({
           "user_email": email,
-          "user_password": password,
+          "user_password": userCredential["password"],
+          "user_salt": userCredential["salt"],
           "time_created": getFullTime(),
           "time_unix_created": getUnixTime(),
         });
         DocumentSnapshot snapshot = await userRegisterInstance.doc(email).get();
         alert(context: context, title: "Register complete!", message: "Your account has been registered successfully.");
         dprint("after regis snapshot id = ${snapshot.id}");
-        email = null;
-        password = null;
+        registerForm.reset();
       } catch (e) {
         dprint("Failed to register with $e");
         alert(context: context, title: "Instance Error", message: "Failed to register with $e");
       }
     }
-    registerForm.reset();
+    email = null;
+    password = null;
+    passwordConfirm = null;
     isFormSubmitting = false;
   }
 
