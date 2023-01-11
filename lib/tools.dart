@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 void dprint(dynamic msg) => debugPrint("[DEBUG_PRINT]: ${msg.toString()}");
 
-void destroy(BuildContext context) => Navigator.pop(context);
+void destroy(BuildContext context) => Navigator.of(context).pop();
 
 padbox({double width = 15, double height = 15}) => SizedBox(width: width, height: height);
 
@@ -20,36 +20,20 @@ void getPath({dynamic v}) async {
   dprint("dir path = ${dir.path}");
 }
 
-void navigateTo(BuildContext context, var pageName) {
+void navigateTo({BuildContext? context, dynamic pageName, int delayTime = 0}) async {
   dprint("[ Navigate to $pageName.. ]");
   try {
+    await Future.delayed(Duration(milliseconds: delayTime));
+    Navigator.of(context!).pop();
     Navigator.pushNamed(context, pageName.toString());
     dprint("[ Navigate to $pageName *Success ]");
   } catch (e) {
-    dprint("[ Navigate to $pageName *failed ]");
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(
-            'Error: Route [$pageName] not found in routes map',
-            style: const TextStyle(fontSize: 20),
-          ),
-          content: Text(
-            e.toString(),
-            style: const TextStyle(fontSize: 16),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Okay'),
-            ),
-          ],
-        );
-      },
-    );
+    dprint("[ Navigate to $pageName *Failed ]");
+    alert(
+        context: context,
+        title: "Error $pageName not found on routes",
+        message: "Cannot navigate to $pageName with \n $e");
+    return;
   }
 }
 
@@ -106,7 +90,12 @@ class Palette {
   }
 }
 
-void alert({BuildContext? context, String title = "{title}", String message = "{content}", String keyAction = "Okay"}) {
+void alert(
+    {BuildContext? context,
+    String title = "{title}",
+    String message = "{content}",
+    String keyAction = "Okay",
+    Function? callback}) {
   showDialog(
       context: context!,
       builder: (BuildContext context) {
@@ -115,7 +104,10 @@ void alert({BuildContext? context, String title = "{title}", String message = "{
           content: Text(message),
           actions: [
             TextButton(
-              onPressed: () => destroy(context),
+              onPressed: () {
+                destroy(context);
+                callback?.call();
+              },
               child: Text(keyAction),
             )
           ],
