@@ -39,6 +39,4 @@ class Sqlitebase {
   }
 }
 
-class FirebaseController {
-  const FirebaseController();
-}
+class FirebaseController {}
