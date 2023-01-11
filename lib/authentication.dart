@@ -9,5 +9,5 @@ Map<String, String> getAuthPasswordGenerate(String password) {
 
 bool getAuthPasswordCheck(String checkPassword, String validPassword, String salt) {
   final hashedCheckPassword = BCrypt.hashpw(checkPassword, salt);
-  return hashedCheckPassword == validPassword ? true : false;
+  return hashedCheckPassword == validPassword;
 }
