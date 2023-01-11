@@ -121,17 +121,21 @@ class _RegistrationState extends State<Registration> {
           "time_unix_created": getUnixTime(),
         });
         DocumentSnapshot snapshot = await userRegisterInstance.doc(email).get();
-        alert(context: context, title: "Register complete!", message: "Your account has been registered successfully.");
         dprint("after regis snapshot id = ${snapshot.id}");
         registerForm.reset();
+        email = null;
+        password = null;
+        passwordConfirm = null;
+        alert(
+            context: context,
+            title: "Register complete!",
+            message: "Your account has been registered successfully.",
+            callback: () => navigateTo(context: context, pageName: "Login"));
       } catch (e) {
         dprint("Failed to register with $e");
         alert(context: context, title: "Instance Error", message: "Failed to register with $e");
       }
     }
-    email = null;
-    password = null;
-    passwordConfirm = null;
     isFormSubmitting = false;
   }
 
