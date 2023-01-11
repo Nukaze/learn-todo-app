@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Palette.contrastMate),
       // home: const MyHomePage(title: "Ourah!"),
       // home: const TodoList(username: "Takumi"),
+      // home: const LoginPage(),
       home: const Registration(),
       routes: {
         "Home": (context) => const MyHomePage(title: ""),
@@ -124,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
         FloatingActionButton(
           heroTag: "menuSelectionBtn",
           onPressed: () {
-            navigateTo(context, "MenuSelection");
+            navigateTo(context: context, pageName: "MenuSelection");
           },
           child: const Icon(Icons.fastfood_outlined),
         )
