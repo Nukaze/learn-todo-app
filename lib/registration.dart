@@ -13,7 +13,6 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-  String? _user, _pass;
   final _formkey = GlobalKey<FormState>();
   bool isFormSubmitting = false;
   String? email, password, passwordConfirm;
@@ -100,8 +99,18 @@ class _RegistrationState extends State<Registration> {
     isFormSubmitting = true;
     final registerForm = _formkey.currentState;
     if (registerForm!.validate()) {
-      dprint("Register form is validated");
       registerForm.save();
+      final QuerySnapshot qrSnapshot =
+          await FirebaseFirestore.instance.collection("users").where("user_email", isEqualTo: email).get();
+      bool isAlreadyRegistered = qrSnapshot.docs.isNotEmpty;
+      dprint("qrsnapshot is $isAlreadyRegistered = ${qrSnapshot.docs}");
+      if (isAlreadyRegistered) {
+        alert(
+            context: context,
+            title: "Register failed",
+            message: "This email is already registered, Please try again with another email.");
+        return;
+      }
       CollectionReference userRegisterInstance = FirebaseFirestore.instance.collection("users");
       try {
         await userRegisterInstance.add({
@@ -110,14 +119,17 @@ class _RegistrationState extends State<Registration> {
           "time_created": getFullTime(),
           "time_unix_created": getUnixTime(),
         });
-        dprint("register complete!!");
-        alert(context: context, title: "Complete!", message: "Your account has been registered successfully.");
-        registerForm.reset();
+        DocumentSnapshot snapshot = await userRegisterInstance.doc(email).get();
+        alert(context: context, title: "Register complete!", message: "Your account has been registered successfully.");
+        dprint("after regis snapshot id = ${snapshot.id}");
+        email = null;
+        password = null;
       } catch (e) {
         dprint("Failed to register with $e");
+        alert(context: context, title: "Instance Error", message: "Failed to register with $e");
       }
     }
-    dprint("_formSubmission");
+    registerForm.reset();
     isFormSubmitting = false;
   }
 
@@ -138,7 +150,6 @@ class _RegistrationState extends State<Registration> {
       String e = "Please enter a valid email address.";
       return e;
     }
-    dprint("Email is OKAY");
     _invalidEmail = false;
     return null; // return null to validate complete
   }
