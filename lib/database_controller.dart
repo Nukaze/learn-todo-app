@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sqflite/sqflite.dart';
+
 import 'tools.dart';
 
 class Sqlitebase {
@@ -39,4 +37,31 @@ class Sqlitebase {
   }
 }
 
-class FirebaseController {}
+class FirebaseController {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _db = FirebaseFirestore.instance;
+
+  Future<Map<String, dynamic>> getUserDocument(String email) async {
+    try {
+      final QuerySnapshot userSnapshot = await _db.collection("users").where("user_email", isEqualTo: email).get();
+      Map<String, dynamic> userDocument = userSnapshot.docs.first.data() as Map<String, dynamic>;
+      userDocument.addAll({"user_id": userSnapshot.docs.first.id});
+      return userDocument;
+    } catch (e) {
+      return {};
+    }
+  }
+
+  Future<UserCredential?> signIn(String email, String password) async {
+    try {
+      // final password, salt = getAuthPasswordCheck(checkPassword, validPassword, salt)
+      final UserCredential authRes = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      return authRes;
+    } catch (e) {
+      dprint("in firebase controller with exception: \n$e");
+      return null;
+    }
+  }
+
+  Future<void> signUp(String email, String password, String salt) async {}
+}
