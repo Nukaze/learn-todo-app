@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'tools.dart';
+
 import 'login.dart';
-import 'todo_list.dart';
 import 'registration.dart';
+import 'todo_list.dart';
+import 'tools.dart';
 
 void main() {
   firebasePlayground();
@@ -42,8 +41,8 @@ class MyApp extends StatelessWidget {
           backgroundColor: Palette.contrastMate),
       // home: const MyHomePage(title: "Ourah!"),
       // home: const TodoList(username: "Takumi"),
-      // home: const LoginPage(),
-      home: const Registration(),
+      home: const LoginPage(),
+      // home: const Registration(),
       routes: {
         "Home": (context) => const MyHomePage(title: ""),
         "Login": (context) => const LoginPage(),
