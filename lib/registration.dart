@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
 import 'authentication.dart';
 import 'tools.dart';
 
@@ -12,7 +11,7 @@ class Registration extends StatefulWidget {
 }
 
 class _RegistrationState extends State<Registration> {
-  final _formkey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   bool isFormSubmitting = false;
   String? email, password, passwordConfirm;
   final FocusNode _emailNode = FocusNode(), _passwordNode = FocusNode();
@@ -59,7 +58,7 @@ class _RegistrationState extends State<Registration> {
       controller: _passwordConfirmController,
     );
     return Form(
-      key: _formkey,
+      key: _formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -90,13 +89,13 @@ class _RegistrationState extends State<Registration> {
   void _formValidation(hasFocus) {
     bool hasChanged = !hasFocus;
     if (hasChanged) {
-      _formkey.currentState!.validate();
+      _formKey.currentState!.validate();
     }
   }
 
   void _formSubmission() async {
     isFormSubmitting = true;
-    final registerForm = _formkey.currentState;
+    final registerForm = _formKey.currentState;
     if (registerForm!.validate()) {
       registerForm.save();
       final QuerySnapshot qrSnapshot =
