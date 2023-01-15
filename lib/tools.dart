@@ -1,40 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 import 'package:intl/intl.dart';
+import 'dart:io';
 
 void dprint(dynamic msg) => debugPrint("[DEBUG_PRINT]: ${msg.toString()}");
 
 void destroy(BuildContext context) => Navigator.of(context).pop();
 
-padbox({double width = 15, double height = 15}) => SizedBox(width: width, height: height);
+SizedBox padbox({double width = 15, double height = 15}) => SizedBox(width: width, height: height);
+int getUnixTime() => DateTime.now().millisecondsSinceEpoch;
+String getFullTime() => DateFormat("yyyy-MM-DD#HH:mm:ss").format(DateTime.now());
+String getYmdTime() => DateFormat("yyyy-MMM-DD").format(DateTime.now());
 
-getUnixTime() => DateTime.now().millisecondsSinceEpoch;
-getFullTime() => DateFormat("yyyy-MM-DD#HH:mm:ss").format(DateTime.now());
-getYmdTime() => DateFormat("yyyy-MMM-DD").format(DateTime.now());
-
-void getPath({dynamic v}) async {
+void getPath(dynamic v) async {
   var dir = await getApplicationDocumentsDirectory();
   dprint("My document dir = $dir");
   await dir.create(recursive: true);
   dprint("dir path = ${dir.path}");
 }
 
-void navigateTo({BuildContext? context, dynamic pageName, int delayTime = 0}) async {
-  dprint("[ Navigate to $pageName.. ]");
+void goingBack(BuildContext context) => Navigator.maybePop(context);
+
+void navigateTo({BuildContext? context, String? routeName, int delayTime = 0, bool onTop = false}) async {
+  dprint("[ Navigate to $routeName.. ]");
   try {
     await Future.delayed(Duration(milliseconds: delayTime));
-    Navigator.of(context!).pop();
-    Navigator.pushNamed(context, pageName.toString());
-    dprint("[ Navigate to $pageName *Success ]");
+    if (onTop) {
+      Navigator.pushNamed(context!, routeName!);
+    } else {
+      Navigator.pushReplacementNamed(context!, routeName!);
+    }
+    dprint("[ Navigate to $routeName *Success ]");
   } catch (e) {
-    dprint("[ Navigate to $pageName *Failed ]");
+    dprint("[ Navigate to $routeName *Failed ]");
     alert(
         context: context,
-        title: "Error $pageName not found on routes",
-        message: "Cannot navigate to $pageName with \n $e");
+        title: "Error $routeName not found on routes",
+        message: "Cannot navigate to $routeName with \n $e");
     return;
   }
+}
+
+void alert(
+    {BuildContext? context,
+    String title = "{title}",
+    String message = "{content}",
+    String keyAction = "Okay",
+    Function? callback}) {
+  showDialog(
+      context: context!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                destroy(context);
+                callback?.call();
+              },
+              child: Text(keyAction),
+            )
+          ],
+        );
+      });
 }
 
 class Palette {
@@ -88,29 +117,4 @@ class Palette {
     }
     return customMaterialColor;
   }
-}
-
-void alert(
-    {BuildContext? context,
-    String title = "{title}",
-    String message = "{content}",
-    String keyAction = "Okay",
-    Function? callback}) {
-  showDialog(
-      context: context!,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                destroy(context);
-                callback?.call();
-              },
-              child: Text(keyAction),
-            )
-          ],
-        );
-      });
 }
