@@ -103,41 +103,31 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
               ),
+            ),
+            Container(
+              width: 200,
+              child: ElevatedButton(
+                child: const Text("Sign-up"),
+                onPressed: () {
+                  dprint("Sign-up!");
+                  navigateTo(context: context, routeName: "Registration");
+                },
+              ),
+            ),
+            padbox(),
+            Container(
+              width: double.infinity,
+              child: ElevatedButton(
+                child: const Text("Guest"),
+                onPressed: () {
+                  dprint("Guest!");
+                  navigateTo(context: context, routeName: "TodoList");
+                },
+              ),
             )
           ],
         ),
       ),
     );
-
-    // return Scaffold(
-    //   body: Form(
-    //     key: _formKey,
-    //     child: Column(
-    //       children: [
-    //         TextFormField(
-    //           decoration: const InputDecoration(labelText: 'Email'),
-    //           initialValue: _email,
-    //           onChanged: (value) => _email = value,
-    //           focusNode: _focusEmail,
-    //         ),
-    //         const SizedBox(
-    //           width: 100,
-    //           height: 25,
-    //         ),
-    //         TextFormField(
-    //           decoration: const InputDecoration(labelText: 'Password'),
-    //           obscureText: true,
-    //           initialValue: _password,
-    //           onChanged: (value) => _password = value,
-    //           focusNode: _focusPassword,
-    //         ),
-    //         TextButton(
-    //           onPressed: _loginSubmission,
-    //           child: const Text('Login'),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 }
