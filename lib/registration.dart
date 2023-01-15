@@ -129,7 +129,7 @@ class _RegistrationState extends State<Registration> {
             context: context,
             title: "Register complete!",
             message: "Your account has been registered successfully.",
-            callback: () => navigateTo(context: context, pageName: "Login"));
+            callback: () => navigateTo(context: context, routeName: "Login"));
       } catch (e) {
         dprint("Failed to register with $e");
         alert(context: context, title: "Instance Error", message: "Failed to register with $e");
