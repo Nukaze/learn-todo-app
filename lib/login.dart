@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
             context: context,
             title: "Login Successful",
             message: "Welcome back ${fbsUserDocument["user_email"]} going to Todo list",
-            callback: () => navigateTo(context: context, pageName: "TodoList"));
+            callback: () => navigateTo(context: context, routeName: "TodoList"));
       } else {
         dprint("logging-in failed");
         alert(context: context, title: "Login Failed", message: "Invalid password, Please enter a valid password.");
